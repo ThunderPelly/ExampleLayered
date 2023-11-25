@@ -1,0 +1,58 @@
+@startuml
+
+actor User
+User -> TaskController: createTask(taskRequestDto)
+activate TaskController
+TaskController -> TaskService: createTask(description)
+activate TaskService
+TaskService -> TaskRepository: saveTask(task)
+activate TaskRepository
+TaskRepository --> TaskService: Task
+deactivate TaskRepository
+TaskService --> TaskController
+
+User -> TaskController: listTasks()
+activate TaskController
+TaskController -> TaskService: getAllTasks()
+activate TaskService
+TaskService -> TaskRepository: allTasks
+activate TaskRepository
+TaskRepository --> TaskService: List<Task>
+deactivate TaskRepository
+TaskService --> TaskController: List<TaskResponseDto>
+deactivate TaskService
+TaskController --> User
+
+User -> TaskController: setTaskPriority(taskDescription, priority)
+activate TaskController
+TaskController -> TaskService: setTaskPriority(taskDescription, priority)
+activate TaskService
+TaskService -> TaskRepository: allTasks
+activate TaskRepository
+TaskRepository --> TaskService: List<Task>
+deactivate TaskRepository
+TaskService -> TaskRepository: saveTask(task)
+activate TaskRepository
+TaskRepository --> TaskService: Task
+deactivate TaskRepository
+TaskService --> TaskController: TaskResponseDto
+deactivate TaskService
+TaskController --> User
+
+User -> TaskController: completeTask(taskDescription)
+activate TaskController
+TaskController -> TaskService: completeTask(taskDescription)
+activate TaskService
+TaskService -> TaskRepository: allTasks
+activate TaskRepository
+TaskRepository --> TaskService: List<Task>
+deactivate TaskRepository
+TaskService -> TaskRepository: saveTask(task)
+activate TaskRepository
+TaskRepository --> TaskService: Task
+deactivate TaskRepository
+TaskService --> TaskController: TaskResponseDto
+deactivate TaskService
+TaskController --> User
+
+@enduml

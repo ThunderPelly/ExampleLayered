@@ -1,0 +1,35 @@
+@startuml
+
+actor User
+User -> UserController: createUser(userRequestDto)
+activate UserController
+UserController -> UserService: createUser(username)
+activate UserService
+UserService -> UserRepository: saveUser(user)
+activate UserRepository
+UserRepository --> UserService: User
+deactivate UserRepository
+UserService --> UserController: UserResponseDto
+deactivate UserService
+UserController --> User: UserResponseDto
+deactivate UserController
+
+User -> UserController: listUsers()
+activate UserController
+UserController -> UserService: getAllUsers()
+activate UserService
+UserService --> UserController: List<User>
+deactivate UserService
+UserController --> User: List<UserResponseDto>
+deactivate UserController
+
+User -> UserController: getUserTasks(username)
+activate UserController
+UserController -> UserService: getUserTasks(username)
+activate UserService
+UserService --> UserController: List<Task>
+deactivate UserService
+UserController --> User: List<TaskResponseDto>
+deactivate UserController
+
+@enduml

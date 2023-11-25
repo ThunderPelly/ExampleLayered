@@ -1,0 +1,22 @@
+@startuml
+!define Entity class
+!define AggregateStart class
+!define AggregateEnd -[hidden]->
+
+Entity Task {
+  + description: String
+  + isCompleted: boolean
+  + assignedUser: User
+  + complete()
+  + assignToUser(user: User)
+}
+
+Entity User {
+  + username: String
+  + assignedTasks: List<Task>
+  + assignTask(task: Task)
+  + getAssignedTasks(): List<Task>
+}
+
+User --> Task: assignedTasks
+@enduml

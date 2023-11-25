@@ -1,0 +1,51 @@
+@startuml
+
+package com.example.layered {
+  [ExampleLayeredApplication]
+}
+
+package com.example.layered.application {
+  [ProjectService]
+  [TaskService]
+  [UserService]
+}
+
+package com.example.layered.model {
+  [Project]
+  [Task]
+  [User]
+}
+
+package com.example.layered.persistence {
+  [ProjectRepository]
+  [TaskRepository]
+  [UserRepository]
+}
+
+package com.example.layered.presentation {
+  [ProjectController]
+  [TaskController]
+  [UserController]
+}
+
+[ExampleLayeredApplication] --> [ProjectController]
+[ExampleLayeredApplication] --> [TaskController]
+[ExampleLayeredApplication] --> [UserController]
+
+[ProjectController] --> [ProjectService]
+[TaskController] --> [TaskService]
+[UserController] --> [UserService]
+
+[ProjectService] --> [ProjectRepository]
+[TaskService] --> [TaskRepository]
+[UserService] --> [UserRepository]
+
+[ProjectService] --> [Project]
+[TaskService] --> [Task]
+[UserService] --> [User]
+
+[ProjectRepository] --> [Project]
+[TaskRepository] --> [Task]
+[UserRepository] --> [User]
+
+@enduml

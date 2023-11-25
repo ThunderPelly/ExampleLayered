@@ -1,0 +1,199 @@
+@startuml
+
+class TaskService {
+    - taskRepository: TaskRepository
+    + createTask(taskData: String?)
+    + getAllTasks(): List<Task>
+}
+
+class UserService {
+    - userRepository: UserRepository
+    + createUser(username: String?): User?
+    + getAllUsers(): List<User>
+    + getUserTasks(username: String?): List<Task>?
+}
+
+class UserTaskService {
+    - userRepository: UserRepository
+    - taskRepository: TaskRepository
+    + assignTaskToUser(username: String?, taskDescription: String?): Task?
+}
+
+class Task {
+    - description: String
+    - isCompleted: Boolean
+    - assignedUser: User
+}
+
+class User {
+    - username: String
+    - assignedTasks: List<Task>
+}
+
+class TaskRepository {
+    - tasks: List<Task>
+    + saveTask(task: Task)
+    + getAllTasks(): List<Task> {get}
+}
+
+class UserRepository {
+    - users: List<User>
+    + getUserByUsername(username: String?): User?
+    + saveUser(user: User)
+    + getAllUsers(): List<User> {get}
+}
+
+class TaskController {
+    - taskService: TaskService
+    + createTask(taskRequestDto: TaskRequestDto)
+    + listTasks(): List<TaskResponseDto>
+}
+
+class UserController {
+    - userService: UserService
+    + createUser(userRequestDto: UserRequestDto): UserResponseDto?
+    + listUsers(): List<UserResponseDto>
+    + getUserTasks(username: String): List<TaskResponseDto>?
+}
+
+class UserTaskController {
+    - userTaskService: UserTaskService
+    + assignTaskToUser(username: String, taskRequestDto: TaskRequestDto)
+}
+
+class TaskRequestDto {
+    - description: String
+}
+
+class TaskResponseDto {
+    - description: String
+}
+
+class UserRequestDto {
+    - userName: String
+}
+
+class UserResponseDto {
+    - userName: String
+}
+
+TaskService --> TaskRepository: <<use>>
+UserService --> UserRepository: <<use>>
+UserTaskService --> UserRepository: <<use>>
+UserTaskService --> TaskRepository: <<use>>
+TaskController --> TaskService: <<use>>
+UserController --> UserService: <<use>>
+UserController --> TaskService: <<use>>
+UserTaskController --> UserTaskService: <<use>>
+UserTaskController --> TaskService: <<use>>
+TaskController --> TaskRequestDto: <<use>>
+TaskController --> TaskResponseDto: <<use>>
+UserController --> UserRequestDto: <<use>>
+UserController --> UserResponseDto: <<use>>
+UserTaskController --> TaskRequestDto: <<use>>
+UserTaskController --> TaskResponseDto: <<use>>
+TaskService --> Task: <<use>>
+UserService --> User: <<use>>
+UserTaskService --> User: <<use>>
+UserTaskService --> Task: <<use>>
+@enduml
+
+@startuml
+
+class TaskService {
+    - taskRepository: TaskRepository
+    + createTask(taskData: String?): void
+    + getAllTasks(): List<Task>
+}
+
+class UserService {
+    - userRepository: UserRepository
+    + createUser(username: String?): User?
+    + getAllUsers(): List<User>
+    + getUserTasks(username: String?): List<Task>?
+}
+
+class UserTaskService {
+    - userRepository: UserRepository
+    - taskRepository: TaskRepository
+    + assignTaskToUser(username: String?, taskDescription: String?): Task?
+}
+
+class Task {
+    - description: String
+    - isCompleted: Boolean
+    - assignedUser: User
+}
+
+class User {
+    - username: String
+    - assignedTasks: List<Task>
+}
+
+class TaskRepository {
+    - tasks: List<Task>
+    + saveTask(task: Task): void
+    + getAllTasks(): List<Task> {get}
+}
+
+class UserRepository {
+    - users: List<User>
+    + getUserByUsername(username: String?): User?
+    + saveUser(user: User): void
+    + getAllUsers(): List<User> {get}
+}
+
+class TaskController {
+    - taskService: TaskService
+    + createTask(taskRequestDto: TaskRequestDto): void
+    + listTasks(): List<TaskResponseDto>
+}
+
+class UserController {
+    - userService: UserService
+    + createUser(userRequestDto: UserRequestDto): UserResponseDto?
+    + listUsers(): List<UserResponseDto>
+    + getUserTasks(username: String): List<TaskResponseDto>?
+}
+
+class UserTaskController {
+    - userTaskService: UserTaskService
+    + assignTaskToUser(username: String, taskRequestDto: TaskRequestDto): void
+}
+
+class TaskRequestDto {
+    - description: String
+}
+
+class TaskResponseDto {
+    - description: String
+}
+
+class UserRequestDto {
+    - userName: String
+}
+
+class UserResponseDto {
+    - userName: String
+}
+
+TaskService --> TaskRepository: 1..1
+UserService --> UserRepository: 1..1
+UserTaskService --> UserRepository: 1..1
+UserTaskService --> TaskRepository: 1..1
+TaskController --> TaskService: 1..1
+UserController --> UserService: 1..1
+UserController --> TaskService: 1..1
+UserTaskController --> UserTaskService: 1..1
+UserTaskController --> TaskService: 1..1
+TaskController --> TaskRequestDto: 1..1
+TaskController --> TaskResponseDto: 1..1
+UserController --> UserRequestDto: 1..1
+UserController --> UserResponseDto: 1..1
+UserTaskController --> TaskRequestDto: 1..1
+UserTaskController --> TaskResponseDto: 1..1
+TaskService --> Task: 1..*
+UserService --> User: 1..*
+UserTaskService --> User: 0..1
+UserTaskService --> Task: 0..1
+@enduml

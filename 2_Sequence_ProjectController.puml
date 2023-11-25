@@ -1,0 +1,51 @@
+@startuml
+
+actor User
+User -> ProjectController: createProject(projectRequestDto)
+activate ProjectController
+ProjectController -> ProjectService: createProject(projectName, role)
+activate ProjectService
+ProjectService -> ProjectRepository: saveProject(project)
+activate ProjectRepository
+ProjectRepository --> ProjectService: Project
+deactivate ProjectRepository
+ProjectService --> ProjectController: ProjectResponseDto
+deactivate ProjectService
+ProjectController --> User: ProjectResponseDto
+deactivate ProjectController
+
+User -> ProjectController: listProjects()
+activate ProjectController
+ProjectController -> ProjectService: getProjects()
+activate ProjectService
+ProjectService -> ProjectRepository: allProjects
+activate ProjectRepository
+ProjectRepository --> ProjectService: MutableMap<UUID, Project>
+deactivate ProjectRepository
+ProjectService --> ProjectController: MutableMap<UUID, Project>
+deactivate ProjectService
+ProjectController --> User: List<ProjectResponseDto>
+deactivate ProjectController
+
+User -> ProjectController: addTaskToProject(projectId, taskDescription)
+activate ProjectController
+ProjectController -> ProjectService: addTaskToProject(projectId, taskDescription)
+activate ProjectService
+ProjectService -> ProjectRepository: getProjectById(projectId)
+activate ProjectRepository
+ProjectRepository --> ProjectService: Project
+deactivate ProjectRepository
+ProjectService -> Project: addTaskToProject(projectId, taskDescription)
+activate Project
+ProjectRepository --> Project: Project
+deactivate ProjectRepository
+ProjectService -> ProjectRepository: saveProject(project)
+activate ProjectRepository
+ProjectRepository --> ProjectService: Project
+deactivate ProjectRepository
+ProjectService --> ProjectController: ProjectResponseDto
+deactivate ProjectService
+ProjectController --> User: ProjectResponseDto
+deactivate ProjectController
+
+@enduml
