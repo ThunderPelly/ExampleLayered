@@ -1,6 +1,7 @@
 package com.example.layered.persistence.user
 
 import com.example.layered.model.User
+import com.example.layered.model.UserName
 import com.example.layered.model.UserRole
 import com.example.layered.persistence.UserRepository
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -11,7 +12,7 @@ class SaveUserTest {
     fun `saveUser should add a user to the repository`() {
         // Arrange
         val userRepository = UserRepository()
-        val user = User(userName = "john.doe", role = UserRole.MANAGER)
+        val user = User(userName = UserName("john.doe"), role = UserRole.MANAGER)
 
         // Act
         val result = userRepository.saveUser(user)

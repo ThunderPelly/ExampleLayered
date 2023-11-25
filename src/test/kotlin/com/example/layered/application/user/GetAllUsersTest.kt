@@ -2,6 +2,7 @@ package com.example.layered.application.user
 
 import com.example.layered.application.UserService
 import com.example.layered.model.User
+import com.example.layered.model.UserName
 import com.example.layered.model.UserRole
 import com.example.layered.persistence.UserRepository
 import io.mockk.MockKAnnotations
@@ -46,8 +47,8 @@ class GetAllUsersTest {
         // Arrange
         val userList =
             listOf(
-                User(userName = "user1", role = UserRole.TEAM_MEMBER),
-                User(userName = "user2", role = UserRole.MANAGER)
+                User(userName = UserName("user1"), role = UserRole.TEAM_MEMBER),
+                User(userName = UserName("user2"), role = UserRole.MANAGER)
             )
         every { userRepository.allUsers } returns userList
 

@@ -13,13 +13,13 @@ class UserController(private val userService: UserService) {
     @PostMapping
     fun createUser(@RequestBody userRequestDto: UserRequestDto): UserResponseDto? {
         val user = userService.createUser(userRequestDto.userName, userRequestDto.role)
-        return user?.let { UserResponseDto(it.userName, it.role) }
+        return user?.let { UserResponseDto(it.userName.value, it.role) }
     }
 
     @GetMapping
     fun listUsers(): List<UserResponseDto>? {
         val users = userService.getAllUsers()
-        return users?.map { UserResponseDto(it.userName, it.role) }
+        return users?.map { UserResponseDto(it.userName.value, it.role) }
     }
 
     @GetMapping("task")

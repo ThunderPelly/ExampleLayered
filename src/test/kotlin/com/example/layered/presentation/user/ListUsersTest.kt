@@ -2,6 +2,7 @@ package com.example.layered.presentation.user
 
 import com.example.layered.application.UserService
 import com.example.layered.model.User
+import com.example.layered.model.UserName
 import com.example.layered.model.UserRole
 import com.example.layered.presentation.UserController
 import io.mockk.every
@@ -23,16 +24,16 @@ class ListUsersTest {
     fun `listUsers should return a list of users`() {
         // Arrange
         val users = listOf(
-            User(userName = "john.doe", role = UserRole.TEAM_MEMBER),
-            User(userName = "jane.smith", role = UserRole.MANAGER)
+            User(userName = UserName("john.doe"), role = UserRole.TEAM_MEMBER),
+            User(userName = UserName("jane.smith"), role = UserRole.MANAGER)
         )
         every { userService.getAllUsers() } returns users
 
         // Act & Assert
         performListUsersRequest()
-            .andExpect(jsonPath("$[0].userName").value(users[0].userName))
+            .andExpect(jsonPath("$[0].userName").value(users[0].userName.value))
             .andExpect(jsonPath("$[0].role").value(users[0].role.name))
-            .andExpect(jsonPath("$[1].userName").value(users[1].userName))
+            .andExpect(jsonPath("$[1].userName").value(users[1].userName.value))
             .andExpect(jsonPath("$[1].role").value(users[1].role.name))
     }
 

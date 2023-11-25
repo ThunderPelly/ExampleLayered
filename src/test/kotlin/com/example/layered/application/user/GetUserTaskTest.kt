@@ -4,6 +4,7 @@ import com.example.layered.application.UserService
 import com.example.layered.application.UserTaskService
 import com.example.layered.model.Task
 import com.example.layered.model.User
+import com.example.layered.model.UserName
 import com.example.layered.model.UserRole
 import com.example.layered.persistence.TaskRepository
 import com.example.layered.persistence.UserRepository
@@ -56,7 +57,7 @@ class GetUserTasksTest {
     fun `getUserTasks should return empty list when user has no tasks`() {
         // Arrange
         val userName = "userWithoutTasks"
-        val user = User(userName = userName, role = UserRole.TEAM_MEMBER)
+        val user = User(userName = UserName(userName), role = UserRole.TEAM_MEMBER)
         every { userRepository.getUserByUsername(userName) } returns user
 
         // Act
@@ -73,7 +74,7 @@ class GetUserTasksTest {
         // Arrange
         val userName = "userWithTasks"
         val taskList = listOf(Task(description = "Task1"), Task(description = "Task2"))
-        val user = User(userName = userName, role = UserRole.TEAM_MEMBER)
+        val user = User(userName = UserName(userName), role = UserRole.TEAM_MEMBER)
 
         every { userRepository.getUserByUsername(userName) } returns user
         every { taskRepository.allTasks } returns taskList

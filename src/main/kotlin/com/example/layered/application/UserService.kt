@@ -2,6 +2,7 @@ package com.example.layered.application
 
 import com.example.layered.model.Task
 import com.example.layered.model.User
+import com.example.layered.model.UserName
 import com.example.layered.model.UserRole
 import com.example.layered.persistence.UserRepository
 import jakarta.transaction.Transactional
@@ -9,13 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.support.DefaultTransactionDefinition
-import kotlin.math.min
 
 @Service
 class UserService(private val userRepository: UserRepository) {
     private val userNameExceptionMessage = "Der Benutzername darf nicht null oder leer sein."
 
-    private final val usernameMaxLength: Int = 5
     private final val defaultUserRole: UserRole = UserRole.TEAM_MEMBER
 
     @Autowired
@@ -34,9 +33,6 @@ class UserService(private val userRepository: UserRepository) {
      */
     @Transactional
     fun createUser(userName: String?, role: UserRole?): User? {
-        // Überprüfen, ob der Benutzername nicht null oder leer ist
-        require(!userName.isNullOrBlank()) { userNameExceptionMessage }
-
         // Setze die Standardrolle, falls die bereitgestellte Rolle null oder leer ist
         val userRole = role ?: defaultUserRole
 
@@ -48,10 +44,11 @@ class UserService(private val userRepository: UserRepository) {
 
             try {
                 // Erstellen eines eindeutigen Benutzernamens
-                val newUserName = createUniqueUserName(userName)
+                val uniqueUserName = createUniqueUserName(userName)
 
                 // Benutzer erstellen und im Repository speichern
-                val user = User(userName = newUserName, role = userRole)
+                val user = User(userName = uniqueUserName, role = userRole)
+
                 userRepository.saveUser(user)
 
                 // Transaktion erfolgreich abschließen
@@ -73,19 +70,17 @@ class UserService(private val userRepository: UserRepository) {
      * @param userName Der ursprüngliche Benutzername.
      * @return Ein eindeutiger Benutzername.
      */
-    fun createUniqueUserName(userName: String): String {
-        // Begrenze die Länge des Basisbenutzernamens auf maximal 5 Zeichen
-        val baseUsername = userName.substring(0, min(userName.length, usernameMaxLength))
-        var newUsername = baseUsername
+    fun createUniqueUserName(userName: String?): UserName {
+        var newUserName = UserName(userName)
         var suffix = 0
 
         // Überprüfe, ob der Benutzername bereits existiert, und füge ein Suffix hinzu, um die Eindeutigkeit sicherzustellen
-        while (userRepository.getUserByUsername(newUsername) != null) {
+        while (userRepository.getUserByUsername(newUserName.value) != null) {
             suffix++
-            newUsername = "$baseUsername$suffix"
+            newUserName = UserName(newUserName.value, suffix)
         }
 
-        return newUsername
+        return newUserName
     }
 
     /**

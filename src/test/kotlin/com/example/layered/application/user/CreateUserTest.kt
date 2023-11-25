@@ -2,6 +2,7 @@ package com.example.layered.application.user
 
 import com.example.layered.application.UserService
 import com.example.layered.model.User
+import com.example.layered.model.UserName
 import com.example.layered.model.UserRole
 import com.example.layered.persistence.UserRepository
 import io.mockk.*
@@ -40,7 +41,7 @@ class CreateUserTest {
         val userName = "john.doe"
         val userRole = UserRole.MANAGER
 
-        every { userRepository.saveUser(any()) } returns User(userName = "john.", role = userRole)
+        every { userRepository.saveUser(any()) } returns User(userName = UserName("john."), role = userRole)
         every { transactionManager.getTransaction(any()) } returns mockk<TransactionStatus>()
         every { transactionManager.commit(any()) } just Runs
         every { userRepository.getUserByUsername("john.") } returns null
@@ -50,7 +51,7 @@ class CreateUserTest {
 
         // Assert
         assertNotNull(result)
-        assertEquals("john.", result?.userName)
+        assertEquals(UserName("john."), result?.userName)
         assertEquals(userRole, result?.role)
         verify(exactly = 1) { userRepository.saveUser(any()) }
     }
@@ -62,11 +63,11 @@ class CreateUserTest {
         val userRole = UserRole.MANAGER
         val newUsername = "john.1"
 
-        every { userRepository.saveUser(any()) } returns User(userName = newUsername, role = userRole)
+        every { userRepository.saveUser(any()) } returns User(userName = UserName(newUsername), role = userRole)
         every { transactionManager.getTransaction(any()) } returns mockk<TransactionStatus>()
         every { transactionManager.commit(any()) } just Runs
         every { userRepository.getUserByUsername("john.") } returns User(
-            userName = userName,
+            userName = UserName(userName),
             role = userRole
         )
         every { userRepository.getUserByUsername("john.1") } returns null // Replace null with the expected result
@@ -76,7 +77,7 @@ class CreateUserTest {
 
         // Assert
         assertNotNull(result)
-        assertEquals(newUsername, result?.userName)
+        assertEquals(newUsername, result?.userName?.value)
         assertEquals(userRole, result?.role)
         verify(exactly = 1) { userRepository.saveUser(any()) }
     }
@@ -86,7 +87,7 @@ class CreateUserTest {
         // Arrange
         val userName = "john.doe"
 
-        every { userRepository.saveUser(any()) } returns User(userName = userName, role = defaultUserRole)
+        every { userRepository.saveUser(any()) } returns User(userName = UserName(userName), role = defaultUserRole)
         every { transactionManager.getTransaction(any()) } returns mockk<TransactionStatus>()
         every { transactionManager.commit(any()) } just Runs
         every { userRepository.getUserByUsername("john.") } returns null
@@ -104,6 +105,7 @@ class CreateUserTest {
     fun `createUser should throw IllegalArgumentException when userName is blank`() {
         // Arrange
         val userName = ""
+        every { transactionManager.getTransaction(any()) } returns mockk<TransactionStatus>()
 
         // Act & Assert
         assertThrows(IllegalArgumentException::class.java) {
@@ -116,6 +118,8 @@ class CreateUserTest {
     fun `createUser should throw IllegalArgumentException when userName is null`() {
         // Arrange
         val userName: String? = null
+
+        every { transactionManager.getTransaction(any()) } returns mockk<TransactionStatus>()
 
         // Act & Assert
         assertThrows(IllegalArgumentException::class.java) {

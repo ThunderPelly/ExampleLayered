@@ -2,6 +2,7 @@ package com.example.layered.presentation.user
 
 import com.example.layered.application.UserService
 import com.example.layered.model.User
+import com.example.layered.model.UserName
 import com.example.layered.model.UserRole
 import com.example.layered.presentation.UserController
 import com.example.layered.presentation.dto.UserRequestDto
@@ -28,7 +29,7 @@ class CreateUserTest {
         val userName = "john."
         val userRole = UserRole.TEAM_MEMBER
         every { userService.createUser(userName, userRole) } returns
-                User(userName = "john.", role = userRole)
+                User(userName = UserName(userName), role = userRole)
 
         val requestDto = UserRequestDto(userName, userRole)
         val requestBody = ObjectMapper().writeValueAsString(requestDto)

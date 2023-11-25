@@ -3,6 +3,7 @@ package com.example.layered.application.userTask
 import com.example.layered.application.UserTaskService
 import com.example.layered.model.Task
 import com.example.layered.model.User
+import com.example.layered.model.UserName
 import com.example.layered.model.UserRole
 import com.example.layered.persistence.TaskRepository
 import com.example.layered.persistence.UserRepository
@@ -38,7 +39,7 @@ class AssignTaskToUserTest {
     fun `assignTaskToUser should assign a task to a user successfully`() {
         // Arrange
         val userName = "john.doe"
-        val user = User(userName = userName, role = UserRole.TEAM_MEMBER)
+        val user = User(userName = UserName(userName), role = UserRole.TEAM_MEMBER)
         val taskDescription = "New Task"
         val task = Task(description = taskDescription)
         val allTasks = listOf(task)
@@ -77,7 +78,7 @@ class AssignTaskToUserTest {
         val taskDescription = "New Task"
 
         every { userRepository.getUserByUsername(userName) } returns User(
-            userName = userName,
+            userName = UserName(userName),
             role = UserRole.TEAM_MEMBER
         )
         every { taskRepository.allTasks } returns emptyList()
@@ -93,7 +94,7 @@ class AssignTaskToUserTest {
         // Arrange
         val userName = "john.doe"
         val taskDescription = "New Task"
-        val user = User(userName = userName, role = UserRole.TEAM_MEMBER)
+        val user = User(userName = UserName(userName), role = UserRole.TEAM_MEMBER)
         val task = Task(description = taskDescription)
         task.isCompleted = true
         user.assignedTasks.add(task)
@@ -113,7 +114,7 @@ class AssignTaskToUserTest {
         // Arrange
         val userName = "john.doe"
         val taskDescription = "New Task"
-        val user = User(userName = userName, role = UserRole.TEAM_MEMBER)
+        val user = User(userName = UserName(userName), role = UserRole.TEAM_MEMBER)
         val highPrioTask = Task(description = "Highprio Task")
         highPrioTask.priority = 4
         val tasks = listOf(
@@ -146,7 +147,7 @@ class AssignTaskToUserTest {
         // Arrange
         val userName = "john.doe"
         val taskDescription = "New Task"
-        val user = User(userName = userName, role = UserRole.TEAM_MEMBER)
+        val user = User(userName = UserName(userName), role = UserRole.TEAM_MEMBER)
         val tasks = listOf(
             Task(description = taskDescription),
             Task(description = "Task2"),

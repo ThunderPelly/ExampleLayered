@@ -1,6 +1,7 @@
 package com.example.layered.persistence.user
 
 import com.example.layered.model.User
+import com.example.layered.model.UserName
 import com.example.layered.model.UserRole
 import com.example.layered.persistence.UserRepository
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -13,7 +14,7 @@ class GetUserByUsernameTest {
         // Arrange
         val userRepository = UserRepository()
         val username = "john.doe"
-        val user = User(userName = username, role = UserRole.MANAGER)
+        val user = User(userName = UserName(username), role = UserRole.MANAGER)
         userRepository.saveUser(user)
 
         // Act
