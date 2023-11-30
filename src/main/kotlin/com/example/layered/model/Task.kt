@@ -1,5 +1,9 @@
 package com.example.layered.model
 
+import com.fasterxml.jackson.core.JsonGenerator
+import com.fasterxml.jackson.databind.JsonSerializer
+import com.fasterxml.jackson.databind.SerializerProvider
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import java.util.*
 
 @JvmInline
@@ -38,6 +42,7 @@ value class TaskPriority(val value: Int = 0) {
     }
 }
 
+@JsonSerialize(using = TaskSerializer::class)
 class Task(
     val taskId: UUID = UUID.randomUUID(),
     val description: TaskDescription,
@@ -45,3 +50,18 @@ class Task(
     var isCompleted: Boolean = false,
     var assignedUser: User? = null
 )
+
+@JsonSerialize(using = TaskSerializer::class)
+class TaskSerializer : JsonSerializer<Task>() {
+    override fun serialize(value: Task?, gen: JsonGenerator?, serializers: SerializerProvider?) {
+        gen?.writeStartObject()
+        gen?.writeStringField("taskId", value?.taskId.toString())
+        gen?.writeStringField("description", value?.description?.value)
+        value?.isCompleted?.let { gen?.writeBooleanField("isCompleted", it) }
+        value?.assignedUser?.let { user ->
+            gen?.writeFieldName("assignedUser")
+            serializers?.defaultSerializeValue(user, gen)
+        }
+        gen?.writeEndObject()
+    }
+}

@@ -37,7 +37,7 @@ class AddTaskToProjectTest {
             .andExpect(jsonPath("$.projectId").value(projectId.toString()))
             .andExpect(jsonPath("$.name").value(updatedProject.name))
             .andExpect(jsonPath("$.tasks").isArray)
-            .andExpect(jsonPath("$.tasks[0].description.value").value(taskDescription))
+            .andExpect(jsonPath("$.tasks[0].description").value(taskDescription))
     }
 
     @Test
