@@ -2,6 +2,7 @@ package com.example.layered.presentation.project
 
 import com.example.layered.application.ProjectService
 import com.example.layered.model.Project
+import com.example.layered.model.ProjectName
 import com.example.layered.presentation.ProjectController
 import com.example.layered.presentation.dto.ProjectResponseDto
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -25,16 +26,16 @@ class ListOfProjectsTest {
     @Test
     fun `listProjects should return a list of ProjectResponseDto`() {
         // Arrange
-        val project1 = Project(UUID.randomUUID(), "Project1")
-        val project2 = Project(UUID.randomUUID(), "Project2")
+        val project1 = Project(UUID.randomUUID(), ProjectName("Project1"))
+        val project2 = Project(UUID.randomUUID(), ProjectName("Project2"))
         every { projectService.getProjects() } returns mutableMapOf(
             project1.projectId to project1,
             project2.projectId to project2
         )
 
         val expectedResponse = listOf(
-            ProjectResponseDto(project1.projectId, project1.name, project1.tasks),
-            ProjectResponseDto(project2.projectId, project2.name, project2.tasks)
+            ProjectResponseDto(project1.projectId, project1.name.value, project1.tasks),
+            ProjectResponseDto(project2.projectId, project2.name.value, project2.tasks)
         )
 
         // Act & Assert

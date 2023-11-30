@@ -2,6 +2,7 @@ package com.example.layered.presentation.project
 
 import com.example.layered.application.ProjectService
 import com.example.layered.model.Project
+import com.example.layered.model.ProjectName
 import com.example.layered.model.Task
 import com.example.layered.model.TaskDescription
 import com.example.layered.presentation.ProjectController
@@ -26,7 +27,7 @@ class AddTaskToProjectTest {
         // Arrange
         val projectId = UUID.randomUUID()
         val taskDescription = "New Task"
-        val updatedProject = Project(projectId, "Test Project")
+        val updatedProject = Project(projectId, ProjectName("Test Project"))
         updatedProject.tasks.add(Task(description = TaskDescription(taskDescription)))
 
         every { projectService.addTaskToProject(projectId, taskDescription) } returns updatedProject
@@ -35,7 +36,7 @@ class AddTaskToProjectTest {
         performAddTaskToProjectRequest(projectId, taskDescription)
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.projectId").value(projectId.toString()))
-            .andExpect(jsonPath("$.name").value(updatedProject.name))
+            .andExpect(jsonPath("$.name").value(updatedProject.name.value))
             .andExpect(jsonPath("$.tasks").isArray)
             .andExpect(jsonPath("$.tasks[0].description").value(taskDescription))
     }

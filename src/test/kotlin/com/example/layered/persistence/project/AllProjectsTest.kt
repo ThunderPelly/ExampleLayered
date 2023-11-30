@@ -1,6 +1,7 @@
 package com.example.layered.persistence.project
 
 import com.example.layered.model.Project
+import com.example.layered.model.ProjectName
 import com.example.layered.persistence.ProjectRepository
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -11,8 +12,8 @@ class AllProjectsTest {
     fun `allProjects should return all projects in the repository`() {
         // Arrange
         val projectRepository = ProjectRepository()
-        val project1 = Project(UUID.randomUUID(), "Project 1")
-        val project2 = Project(UUID.randomUUID(), "Project 2")
+        val project1 = Project(UUID.randomUUID(), ProjectName("Project 1"))
+        val project2 = Project(UUID.randomUUID(), ProjectName("Project 2"))
         projectRepository.saveProject(project1)
         projectRepository.saveProject(project2)
 

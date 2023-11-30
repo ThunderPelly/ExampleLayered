@@ -14,13 +14,19 @@ class ProjectController(private val projectService: ProjectService) {
     @PostMapping
     fun createProject(@RequestBody projectRequestDto: ProjectRequestDto): ProjectResponseDto? {
         val project = projectService.createProject(projectRequestDto.name, projectRequestDto.role)
-        return project?.let { ProjectResponseDto(it.projectId, project.name, it.tasks) }
+        return project?.let { ProjectResponseDto(it.projectId, project.name.value, it.tasks) }
     }
 
     @GetMapping
     fun listProjects(): List<ProjectResponseDto> {
         val projects = projectService.getProjects()
-        return projects.map { (projectId, project) -> ProjectResponseDto(projectId, project.name, project.tasks) }
+        return projects.map { (projectId, project) ->
+            ProjectResponseDto(
+                projectId,
+                project.name.value,
+                project.tasks
+            )
+        }
     }
 
     @PutMapping("/{projectId}/add-task")
@@ -29,6 +35,7 @@ class ProjectController(private val projectService: ProjectService) {
         @RequestParam taskDescription: String
     ): ProjectResponseDto? {
         val project = projectService.addTaskToProject(projectId, taskDescription)
-        return ProjectResponseDto(project?.projectId, project?.projectName?.value, project?.tasks)
+        val test = ProjectResponseDto(project?.projectId, project?.name?.value, project?.tasks)
+        return test
     }
 }

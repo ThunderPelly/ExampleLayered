@@ -2,6 +2,7 @@ package com.example.layered.presentation.project
 
 import com.example.layered.application.ProjectService
 import com.example.layered.model.Project
+import com.example.layered.model.ProjectName
 import com.example.layered.model.UserRole
 import com.example.layered.presentation.ProjectController
 import com.example.layered.presentation.dto.ProjectRequestDto
@@ -27,7 +28,7 @@ class CreateProjectTest {
         // Arrange
         val projectId = UUID.randomUUID()
         val projectName = "Test Project"
-        val project = Project(projectId, projectName)
+        val project = Project(projectId, ProjectName(projectName))
         every { projectService.createProject(projectName, UserRole.MANAGER) } returns project
 
         val requestDto = ProjectRequestDto(name = projectName, role = UserRole.MANAGER)

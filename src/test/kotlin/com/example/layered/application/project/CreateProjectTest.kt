@@ -2,6 +2,7 @@ package com.example.layered.application.project
 
 import com.example.hexagonal.domain.application.exceptions.InsufficientPermissionException
 import com.example.layered.application.ProjectService
+import com.example.layered.model.ProjectName
 import com.example.layered.model.UserRole
 import com.example.layered.persistence.ProjectRepository
 import io.mockk.mockk
@@ -18,11 +19,11 @@ class CreateProjectTest {
     @Test
     fun `createProject should create and save project when user has manager role`() {
         // Arrange
-        val projectName = "Test Project"
+        val projectName = ProjectName("Test Project")
         val managerRole = UserRole.MANAGER
 
         // Act
-        val result = projectService.createProject(projectName, managerRole)
+        val result = projectService.createProject(projectName.value, managerRole)
 
         // Assert
         verify(exactly = 1) { projectRepository.saveProject(result!!) }

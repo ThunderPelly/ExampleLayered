@@ -2,6 +2,7 @@ package com.example.layered.application.project
 
 import com.example.layered.application.ProjectService
 import com.example.layered.model.Project
+import com.example.layered.model.ProjectName
 import com.example.layered.persistence.ProjectRepository
 import io.mockk.every
 import io.mockk.mockk
@@ -18,7 +19,7 @@ class AddTaskToProjectTest {
     fun `addTaskToProject should add a task to the project and return the updated project`() {
         // Arrange
         val projectId = UUID.randomUUID()
-        val project = Project(projectId, "Test Project")
+        val project = Project(projectId, ProjectName("Test Project"))
         val taskDescription = "New Task"
         every { projectRepository.getProjectById(projectId) } returns project
 

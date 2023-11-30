@@ -2,6 +2,7 @@ package com.example.layered.application.project
 
 import com.example.layered.application.ProjectService
 import com.example.layered.model.Project
+import com.example.layered.model.ProjectName
 import com.example.layered.persistence.ProjectRepository
 import io.mockk.every
 import io.mockk.mockk
@@ -18,8 +19,8 @@ class GetProjectsTest {
     @Test
     fun `getProjects should return all projects from the repository`() {
         // Arrange
-        val project1 = Project(UUID.randomUUID(), "Project 1")
-        val project2 = Project(UUID.randomUUID(), "Project 2")
+        val project1 = Project(UUID.randomUUID(), ProjectName("Project 1"))
+        val project2 = Project(UUID.randomUUID(), ProjectName("Project 2"))
         every { projectRepository.allProjects } returns mutableMapOf(
             project1.projectId to project1,
             project2.projectId to project2
