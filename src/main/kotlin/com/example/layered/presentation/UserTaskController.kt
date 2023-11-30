@@ -16,6 +16,6 @@ class UserTaskController(private val userTaskService: UserTaskService) {
         @RequestBody taskRequestDto: TaskRequestDto
     ): TaskResponseDto? {
         val task = userTaskService.assignTaskToUser(userName, taskRequestDto.description)
-        return task?.let { TaskResponseDto(it.description) }
+        return task?.let { TaskResponseDto(it.description.value) }
     }
 }

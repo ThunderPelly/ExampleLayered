@@ -29,7 +29,7 @@ class CreateTaskTest {
         taskService.createTask(description)
 
         // Assert
-        verify(exactly = 1) { taskRepository.saveTask(match { it.description == description }) }
+        verify(exactly = 1) { taskRepository.saveTask(match { it.description.value == description }) }
     }
 
     @Test

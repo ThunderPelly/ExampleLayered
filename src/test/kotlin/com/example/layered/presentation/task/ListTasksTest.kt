@@ -2,6 +2,7 @@ package com.example.layered.presentation.task
 
 import com.example.layered.application.TaskService
 import com.example.layered.model.Task
+import com.example.layered.model.TaskDescription
 import com.example.layered.presentation.TaskController
 import io.mockk.every
 import io.mockk.mockk
@@ -23,8 +24,8 @@ class ListTasksTest {
     @Test
     fun `listTasks should return a list of task descriptions`() {
         // Arrange
-        val task1 = Task(description = "Task 1")
-        val task2 = Task(description = "Task 2")
+        val task1 = Task(description = TaskDescription("Task 1"))
+        val task2 = Task(description = TaskDescription("Task 2"))
         every { taskService.getAllTasks() } returns listOf(task1, task2)
 
         // Act & Assert

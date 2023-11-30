@@ -29,6 +29,7 @@ class ProjectController(private val projectService: ProjectService) {
         @RequestParam taskDescription: String
     ): ProjectResponseDto? {
         val project = projectService.addTaskToProject(projectId, taskDescription)
-        return project?.let { ProjectResponseDto(it.projectId, it.name, it.tasks) }
+        val taskDto = ProjectResponseDto(project?.projectId, project?.name, project?.tasks)
+        return taskDto
     }
 }

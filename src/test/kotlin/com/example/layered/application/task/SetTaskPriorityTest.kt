@@ -2,6 +2,7 @@ package com.example.layered.application.task
 
 import com.example.layered.application.TaskService
 import com.example.layered.model.Task
+import com.example.layered.model.TaskDescription
 import com.example.layered.persistence.TaskRepository
 import io.mockk.every
 import io.mockk.mockk
@@ -22,7 +23,7 @@ class SetTaskPriorityTest {
         // Arrange
         val taskDescription = "Task1"
         val updatedPriority = 3
-        val task = Task(description = taskDescription)
+        val task = Task(description = TaskDescription(taskDescription))
         every { taskRepository.allTasks } returns listOf(task)
         every { taskRepository.saveTask(any()) } returns task
 
@@ -31,7 +32,7 @@ class SetTaskPriorityTest {
 
         // Assert
         assertEquals(task, result)
-        assertEquals(updatedPriority, result?.priority)
+        result?.priority?.let { assertEquals(updatedPriority, it.value) }
         verify(exactly = 1) { taskRepository.saveTask(task) }
     }
 

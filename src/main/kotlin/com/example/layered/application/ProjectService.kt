@@ -4,6 +4,7 @@ import com.example.hexagonal.domain.application.exceptions.InsufficientPermissio
 import com.example.layered.infrastructure.isValidUuid
 import com.example.layered.model.Project
 import com.example.layered.model.Task
+import com.example.layered.model.TaskDescription
 import com.example.layered.model.UserRole
 import com.example.layered.persistence.ProjectRepository
 import org.springframework.stereotype.Service
@@ -12,7 +13,6 @@ import java.util.*
 @Service
 class ProjectService(private val projectRepository: ProjectRepository) {
     private val projectExceptionMessage = "Die Projekt-Id darf nicht null oder leer sein."
-    private val descriptionExceptionMessage = "Die Aufgabenbeschreibung  darf nicht null oder leer sein."
     private val projectNameExceptionMessage = "Der Projektname darf nicht null oder leer sein."
     private val insufficientPermissionExceptionMessage =
         "Benutzer hat nicht die erforderliche Rolle, um ein Projekt zu erstellen."
@@ -59,9 +59,8 @@ class ProjectService(private val projectRepository: ProjectRepository) {
     fun addTaskToProject(projectId: UUID?, taskDescription: String?): Project? {
         // Überprüfen, ob der Projekt-Id nicht null oder leer ist
         require(projectId.isValidUuid()) { projectExceptionMessage }
-        require(!taskDescription.isNullOrBlank()) { descriptionExceptionMessage }
         val project = projectId?.let { projectRepository.getProjectById(it) }
-        val task = Task(description = taskDescription)
+        val task = Task(description = TaskDescription(taskDescription))
         project?.let {
             it.tasks.add(task)
             projectRepository.saveProject(project)

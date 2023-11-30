@@ -1,6 +1,8 @@
 package com.example.layered.application
 
 import com.example.layered.model.Task
+import com.example.layered.model.TaskDescription
+import com.example.layered.model.TaskPriority
 import com.example.layered.persistence.TaskRepository
 import org.springframework.stereotype.Service
 
@@ -16,10 +18,8 @@ class TaskService(private val taskRepository: TaskRepository) {
      * @throws IllegalArgumentException Wenn die Task-Beschreibung ungültig ist.
      */
     fun createTask(description: String?): Task? {
-        // Überprüfen, ob der Beschreibung nicht null oder leer ist
-        require(!description.isNullOrBlank()) { descriptionExceptionMessage }
-        val task = Task(description = description)
-        task.let { taskRepository.saveTask(it) }
+        val task = Task(description = TaskDescription(description))
+        taskRepository.saveTask(task)
         return task
     }
 
@@ -42,7 +42,7 @@ class TaskService(private val taskRepository: TaskRepository) {
     fun completeTask(description: String?): Task? {   // Überprüfen, ob der Beschreibung und die Priorität nicht null oder leer ist
         require(!description.isNullOrBlank()) { descriptionExceptionMessage }
 
-        val task = taskRepository.allTasks.find { it.description == description }
+        val task = taskRepository.allTasks.find { it.description.value == description }
         task?.let {
             it.isCompleted = true
             taskRepository.saveTask(it)
@@ -60,11 +60,10 @@ class TaskService(private val taskRepository: TaskRepository) {
      */
     fun setTaskPriority(description: String?, priority: Int?): Task? {
         // Überprüfen, ob der Beschreibung und die Priorität nicht null oder leer ist
-        require(!description.isNullOrBlank()) { descriptionExceptionMessage }
         require(priority != null && priority > 0) { priorityExceptionMessage }
-        val task = taskRepository.allTasks.find { it.description == description }
+        val task = taskRepository.allTasks.find { it.description.value == description }
         task?.let {
-            it.priority = priority
+            it.priority = TaskPriority(priority)
             taskRepository.saveTask(it)
         }
         return task

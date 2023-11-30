@@ -1,6 +1,7 @@
 package com.example.layered.application
 
 import com.example.layered.model.Task
+import com.example.layered.model.TaskPriority
 import com.example.layered.model.User
 import com.example.layered.persistence.TaskRepository
 import com.example.layered.persistence.UserRepository
@@ -26,7 +27,7 @@ class UserTaskService(
      */
     fun assignTaskToUser(userName: String?, taskDescription: String?): Task? {
         val user = userRepository.getUserByUsername(userName)
-        val task = taskRepository.allTasks.find { it.description == taskDescription }
+        val task = taskRepository.allTasks.find { it.description.value == taskDescription }
         requireNotNull(userName) { userNameExceptionMessage }
 
         require(!(user == null || task == null)) { userOrTaskExceptionMessage }
@@ -60,7 +61,7 @@ class UserTaskService(
      * @return True if a task should be reassigned, false otherwise.
      */
     private fun shouldReassignTask(user: User): Boolean {
-        return user.assignedTasks.any { it.priority > 3 }
+        return user.assignedTasks.any { it.priority.value > 3 }
     }
 
     /**
@@ -85,8 +86,8 @@ class UserTaskService(
      * @param task Die Aufgabe, die neu zugewiesen wird.
      */
     private fun reassignTask(user: User, task: Task) {
-        val highestPriority = user.assignedTasks.maxByOrNull { it.priority }!!.priority
-        task.priority = highestPriority + 1
+        val highestPriority = user.assignedTasks.maxByOrNull { it.priority.value }!!.priority
+        task.priority = TaskPriority(highestPriority.value + 1)
         task.assignedUser = user
         user.assignedTasks.add(task)
 

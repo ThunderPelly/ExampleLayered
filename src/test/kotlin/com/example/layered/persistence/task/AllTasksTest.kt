@@ -1,6 +1,7 @@
 package com.example.layered.persistence.task
 
 import com.example.layered.model.Task
+import com.example.layered.model.TaskDescription
 import com.example.layered.persistence.TaskRepository
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -10,8 +11,8 @@ class AllTasksTest {
     fun `allTasks should return all tasks in the repository`() {
         // Arrange
         val taskRepository = TaskRepository()
-        val task1 = Task(description = "Task 1")
-        val task2 = Task(description = "Task 2")
+        val task1 = Task(description = TaskDescription("Task 1"))
+        val task2 = Task(description = TaskDescription("Task 2"))
 
         // Act
         taskRepository.saveTask(task1)

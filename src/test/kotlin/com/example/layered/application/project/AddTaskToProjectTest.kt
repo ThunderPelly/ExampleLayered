@@ -28,7 +28,7 @@ class AddTaskToProjectTest {
         // Assert
         assertEquals(project, result)
         assertEquals(1, result?.tasks?.size)
-        assertEquals(taskDescription, result?.tasks?.first()?.description)
+        assertEquals(taskDescription, result?.tasks?.first()?.description?.value)
     }
 
     @Test

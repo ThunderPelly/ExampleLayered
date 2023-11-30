@@ -3,6 +3,7 @@ package com.example.layered.presentation.userTask
 
 import com.example.layered.application.UserTaskService
 import com.example.layered.model.Task
+import com.example.layered.model.TaskDescription
 import com.example.layered.presentation.UserTaskController
 import com.example.layered.presentation.dto.TaskRequestDto
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -33,7 +34,7 @@ class AssignTaskToUserTest {
                 userName,
                 taskDescription
             )
-        } returns Task(description = taskDescription)
+        } returns Task(description = TaskDescription(taskDescription))
 
         // Act & Assert
         performAssignTaskToUserRequest(userName, TaskRequestDto(taskDescription))

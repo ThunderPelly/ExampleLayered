@@ -2,6 +2,7 @@ package com.example.layered.presentation.task
 
 import com.example.layered.application.TaskService
 import com.example.layered.model.Task
+import com.example.layered.model.TaskDescription
 import com.example.layered.presentation.TaskController
 import com.example.layered.presentation.dto.TaskRequestDto
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -26,7 +27,7 @@ class CreateTaskTest {
     fun `createTask should return 200 when a task is created successfully`() {
         // Arrange
         val taskDescription = "New Task"
-        every { taskService.createTask(taskDescription) } returns Task(description = taskDescription)
+        every { taskService.createTask(taskDescription) } returns Task(description = TaskDescription(taskDescription))
 
         // Act & Assert
         performCreateTaskRequest(TaskRequestDto(taskDescription))

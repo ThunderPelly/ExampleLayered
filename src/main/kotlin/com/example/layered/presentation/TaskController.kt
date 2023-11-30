@@ -12,13 +12,13 @@ class TaskController(private val taskService: TaskService) {
     @PostMapping
     fun createTask(@RequestBody taskRequestDto: TaskRequestDto): TaskResponseDto? {
         val task = taskService.createTask(taskRequestDto.description)
-        return task?.description?.let { TaskResponseDto(it) }
+        return task?.description?.let { TaskResponseDto(it.value) }
     }
 
     @GetMapping
     fun listTasks(): List<TaskResponseDto>? {
         val tasks = taskService.getAllTasks()
-        return tasks?.map { TaskResponseDto(it.description) }
+        return tasks?.map { TaskResponseDto(it.description.value) }
     }
 
     @PutMapping("/{taskDescription}/priority")
@@ -27,7 +27,7 @@ class TaskController(private val taskService: TaskService) {
         @RequestParam priority: Int
     ): TaskResponseDto? {
         val task = taskService.setTaskPriority(taskDescription, priority)
-        return task?.description?.let { TaskResponseDto(it) }
+        return task?.description?.let { TaskResponseDto(it.value) }
     }
 
     @PutMapping("/{taskDescription}/complete")
@@ -35,6 +35,6 @@ class TaskController(private val taskService: TaskService) {
         @PathVariable taskDescription: String,
     ): TaskResponseDto? {
         val task = taskService.completeTask(taskDescription)
-        return task?.description?.let { TaskResponseDto(it) }
+        return task?.description?.let { TaskResponseDto(it.value) }
     }
 }

@@ -2,6 +2,7 @@ package com.example.layered.presentation.task
 
 import com.example.layered.application.TaskService
 import com.example.layered.model.Task
+import com.example.layered.model.TaskDescription
 import com.example.layered.presentation.TaskController
 import io.mockk.every
 import io.mockk.mockk
@@ -24,7 +25,11 @@ class SetTaskPriorityTest {
         // Arrange
         val taskDescription = "Task 1"
         val priority = 3
-        every { taskService.setTaskPriority(taskDescription, priority) } returns Task(description = taskDescription)
+        every { taskService.setTaskPriority(taskDescription, priority) } returns Task(
+            description = TaskDescription(
+                taskDescription
+            )
+        )
 
         // Act & Assert
         performSetTaskPriorityRequest(taskDescription, priority)

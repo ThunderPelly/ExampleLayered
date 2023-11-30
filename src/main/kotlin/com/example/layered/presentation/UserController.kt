@@ -25,6 +25,6 @@ class UserController(private val userService: UserService) {
     @GetMapping("task")
     fun getUserTasks(@RequestParam username: String): List<TaskResponseDto>? {
         val tasks = userService.getUserTasks(username)
-        return tasks?.map { TaskResponseDto(it.description) }
+        return tasks?.map { TaskResponseDto(it.description.value) }
     }
 }

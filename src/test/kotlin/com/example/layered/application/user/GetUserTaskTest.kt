@@ -2,10 +2,7 @@ package com.example.layered.application.user
 
 import com.example.layered.application.UserService
 import com.example.layered.application.UserTaskService
-import com.example.layered.model.Task
-import com.example.layered.model.User
-import com.example.layered.model.UserName
-import com.example.layered.model.UserRole
+import com.example.layered.model.*
 import com.example.layered.persistence.TaskRepository
 import com.example.layered.persistence.UserRepository
 import io.mockk.MockKAnnotations
@@ -73,7 +70,8 @@ class GetUserTasksTest {
     fun `getUserTasks should return a list of tasks when user has tasks`() {
         // Arrange
         val userName = "userWithTasks"
-        val taskList = listOf(Task(description = "Task1"), Task(description = "Task2"))
+        val taskList =
+            listOf(Task(description = TaskDescription("Task1")), Task(description = TaskDescription("Task2")))
         val user = User(userName = UserName(userName), role = UserRole.TEAM_MEMBER)
 
         every { userRepository.getUserByUsername(userName) } returns user
@@ -81,8 +79,8 @@ class GetUserTasksTest {
         every { taskRepository.saveTask(taskList.get(0)) } returns taskList.get(0)
         every { taskRepository.saveTask(taskList.get(1)) } returns taskList.get(1)
 
-        assignTaskToUser(userName, taskList.get(0).description)
-        assignTaskToUser(userName, taskList.get(1).description)
+        assignTaskToUser(userName, taskList.get(0).description.value)
+        assignTaskToUser(userName, taskList.get(1).description.value)
 
         // Act
         val result = userService.getUserTasks(userName)

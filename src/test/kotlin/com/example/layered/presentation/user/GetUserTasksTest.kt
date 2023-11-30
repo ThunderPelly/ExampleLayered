@@ -2,6 +2,7 @@ package com.example.layered.presentation.user
 
 import com.example.layered.application.UserService
 import com.example.layered.model.Task
+import com.example.layered.model.TaskDescription
 import com.example.layered.presentation.UserController
 import io.mockk.every
 import io.mockk.mockk
@@ -22,13 +23,13 @@ class GetUserTasksTest {
     fun `getUserTasks should return a list of tasks for a user`() {
         // Arrange
         val username = "john.doe"
-        val tasks = listOf(Task(description = "Task 1"), Task(description = "Task 2"))
+        val tasks = listOf(Task(description = TaskDescription("Task 1")), Task(description = TaskDescription("Task 2")))
         every { userService.getUserTasks(username) } returns tasks
 
         // Act & Assert
         performGetUserTasksRequest(username)
-            .andExpect(jsonPath("$[0].description").value(tasks[0].description))
-            .andExpect(jsonPath("$[1].description").value(tasks[1].description))
+            .andExpect(jsonPath("$[0].description").value(tasks[0].description.value))
+            .andExpect(jsonPath("$[1].description").value(tasks[1].description.value))
     }
 
     @Test

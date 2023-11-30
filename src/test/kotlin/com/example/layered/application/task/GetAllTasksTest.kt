@@ -2,6 +2,7 @@ package com.example.layered.application.task
 
 import com.example.layered.application.TaskService
 import com.example.layered.model.Task
+import com.example.layered.model.TaskDescription
 import com.example.layered.persistence.TaskRepository
 import io.mockk.every
 import io.mockk.mockk
@@ -28,7 +29,7 @@ class GetAllTasksTest {
     @Test
     fun `getAllTasks should return a list of tasks when tasks are present`() {
         // Arrange
-        val tasks = listOf(Task(description = "Task1"), Task(description = "Task2"))
+        val tasks = listOf(Task(description = TaskDescription("Task1")), Task(description = TaskDescription("Task2")))
         every { taskRepository.allTasks } returns tasks
 
         // Act

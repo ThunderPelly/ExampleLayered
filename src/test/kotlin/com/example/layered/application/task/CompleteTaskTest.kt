@@ -2,6 +2,7 @@ package com.example.layered.application.task
 
 import com.example.layered.application.TaskService
 import com.example.layered.model.Task
+import com.example.layered.model.TaskDescription
 import com.example.layered.persistence.TaskRepository
 import io.mockk.every
 import io.mockk.mockk
@@ -20,7 +21,7 @@ class CompleteTaskTest {
     fun `completeTask should mark task as completed and return the updated task`() {
         // Arrange
         val taskDescription = "Task1"
-        val task = Task(description = taskDescription)
+        val task = Task(description = TaskDescription(taskDescription))
         every { taskRepository.allTasks } returns listOf(task)
         every { taskRepository.saveTask(any()) } returns task
 

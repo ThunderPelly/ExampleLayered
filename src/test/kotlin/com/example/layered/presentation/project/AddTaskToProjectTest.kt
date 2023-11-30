@@ -3,6 +3,7 @@ package com.example.layered.presentation.project
 import com.example.layered.application.ProjectService
 import com.example.layered.model.Project
 import com.example.layered.model.Task
+import com.example.layered.model.TaskDescription
 import com.example.layered.presentation.ProjectController
 import io.mockk.every
 import io.mockk.mockk
@@ -26,7 +27,7 @@ class AddTaskToProjectTest {
         val projectId = UUID.randomUUID()
         val taskDescription = "New Task"
         val updatedProject = Project(projectId, "Test Project")
-        updatedProject.tasks.add(Task(description = taskDescription))
+        updatedProject.tasks.add(Task(description = TaskDescription(taskDescription)))
 
         every { projectService.addTaskToProject(projectId, taskDescription) } returns updatedProject
 
@@ -36,7 +37,7 @@ class AddTaskToProjectTest {
             .andExpect(jsonPath("$.projectId").value(projectId.toString()))
             .andExpect(jsonPath("$.name").value(updatedProject.name))
             .andExpect(jsonPath("$.tasks").isArray)
-            .andExpect(jsonPath("$.tasks[0].description").value(taskDescription))
+            .andExpect(jsonPath("$.tasks[0].description.value").value(taskDescription))
     }
 
     @Test

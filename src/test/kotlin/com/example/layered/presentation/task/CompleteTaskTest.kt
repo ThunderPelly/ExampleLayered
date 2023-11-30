@@ -2,6 +2,7 @@ package com.example.layered.presentation.task
 
 import com.example.layered.application.TaskService
 import com.example.layered.model.Task
+import com.example.layered.model.TaskDescription
 import com.example.layered.presentation.TaskController
 import io.mockk.every
 import io.mockk.mockk
@@ -23,7 +24,7 @@ class CompleteTaskTest {
     fun `completeTask should complete the task and return the task details`() {
         // Arrange
         val taskDescription = "Existing Task"
-        val completedTask = Task(description = taskDescription)
+        val completedTask = Task(description = TaskDescription(taskDescription))
         every { taskService.completeTask(taskDescription) } returns completedTask
 
         // Act & Assert
