@@ -1,199 +1,217 @@
 @startuml
+top to bottom direction
+skinparam linetype ortho
+skinparam ranksep 50
+scale 1024 width
+scale 768 height
 
-class TaskService {
-    - taskRepository: TaskRepository
-    + createTask(taskData: String?)
-    + getAllTasks(): List<Task>
+package "com.example.layered.application" {
+    class ProjectService {
+        -projectExceptionMessage: String
+        -descriptionExceptionMessage: String
+        -projectNameExceptionMessage: String
+        -insufficientPermissionExceptionMessage: String
+        +createProject(projectName: String?, role: UserRole?): Project
+        +getProjects(): MutableMap<UUID, Project>
+        +addTaskToProject(projectId: UUID?, taskDescription: String?): Project
+    }
+
+    class TaskService {
+        -descriptionExceptionMessage: String
+        -priorityExceptionMessage: String
+        +createTask(description: String?): Task
+        +getAllTasks(): List<Task>
+        +completeTask(description: String?): Task
+        +setTaskPriority(description: String?, priority: Int?): Task
+    }
+
+    class UserService {
+        -userNameExceptionMessage: String
+        -usernameMaxLength: Int
+        -defaultUserRole: UserRole
+        -transactionManager: PlatformTransactionManager
+        -userCreationLock: Object
+        +createUser(userName: String?, role: UserRole?): User
+        +createUniqueUserName(userName: String): String
+        +getAllUsers(): List<User>
+        +getUserTasks(userName: String?): List<Task>
+    }
+
+    class UserTaskService {
+        +userRepository: UserRepository
+        +taskRepository: TaskRepository
+        -businessLogicException: String
+        -userNameExceptionMessage: String
+        -userOrTaskExceptionMessage: String
+        -completedTaskExceptionMessage: String
+        +assignTaskToUser(userName: String?, taskDescription: String?): Task
+        +shouldAssignTask(user: User): Boolean
+        +shouldReassignTask(user: User): Boolean
+    }
 }
 
-class UserService {
-    - userRepository: UserRepository
-    + createUser(username: String?): User?
-    + getAllUsers(): List<User>
-    + getUserTasks(username: String?): List<Task>?
+
+
+package "com.example.layered.persistence" {
+    class ProjectRepository {
+        -projects: MutableMap<UUID, Project>
+        +saveProject(project: Project): Project
+        +getProjectById(projectId: UUID): Project?
+        +allProjects: MutableMap<UUID, Project>
+    }
+
+    class TaskRepository {
+        -tasks: MutableList<Task>
+        +saveTask(task: Task): Task
+        +allTasks: List<Task>
+    }
+
+    class UserRepository {
+        -users: MutableList<User>
+        +getUserByUsername(username: String?): User?
+        +saveUser(user: User): User
+        +allUsers: List<User>
+    }
 }
 
-class UserTaskService {
-    - userRepository: UserRepository
-    - taskRepository: TaskRepository
-    + assignTaskToUser(username: String?, taskDescription: String?): Task?
+package "com.example.layered.presentation" {
+    class ProjectController {
+        +projectService: ProjectService
+        +createProject(projectRequestDto: ProjectRequestDto): ProjectResponseDto?
+        +listProjects(): List<ProjectResponseDto>
+        +addTaskToProject(projectId: UUID, taskDescription: String): ProjectResponseDto?
+    }
+
+    class TaskController {
+        +taskService: TaskService
+        +createTask(taskRequestDto: TaskRequestDto): TaskResponseDto?
+        +listTasks(): List<TaskResponseDto>?
+        +setTaskPriority(taskDescription: String, priority: Int): TaskResponseDto?
+        +completeTask(taskDescription: String): TaskResponseDto?
+    }
+
+    class UserController {
+        +userService: UserService
+        +createUser(userRequestDto: UserRequestDto): UserResponseDto?
+        +listUsers(): List<UserResponseDto>?
+        +getUserTasks(username: String): List<TaskResponseDto>?
+    }
+
+    class UserTaskController {
+        +userTaskService: UserTaskService
+        +assignTaskToUser(userName: String, taskRequestDto: TaskRequestDto): TaskResponseDto?
+    }
 }
 
-class Task {
-    - description: String
-    - isCompleted: Boolean
-    - assignedUser: User
+package "com.example.layered.presentation.dto" {
+    class ProjectRequestDto {
+        +name: String?
+        +role: UserRole?
+        +ProjectRequestDto()
+    }
+
+    class ProjectResponseDto {
+        +projectId: UUID?
+        +name: String?
+        +tasks: MutableList<Task>?
+        +ProjectResponseDto()
+    }
+
+    class TaskRequestDto {
+        +description: String?
+        +TaskRequestDto()
+    }
+
+    class TaskResponseDto {
+        +description: String?
+        +TaskResponseDto()
+    }
+
+    class UserRequestDto {
+        +userName: String?
+        +role: UserRole?
+        +UserRequestDto()
+    }
+
+    class UserResponseDto {
+        +userName: String?
+        +role: UserRole?
+        +UserResponseDto()
+    }
 }
 
-class User {
-    - username: String
-    - assignedTasks: List<Task>
+package "com.example.layered.model" {
+    class Project {
+        -projectId: UUID
+        -name: String
+        +tasks: MutableList<Task>
+        +Project(projectId: UUID, name: String)
+    }
+
+    class Task {
+        -taskId: UUID
+        -description: String
+        -priority: Int
+        -assignedUser: User
+        -isCompleted: Boolean
+        +Task(taskId: UUID, description: String)
+    }
+
+    class User {
+        -userId: UUID
+        -userName: String
+        -role: UserRole
+        +assignedTasks: MutableList<Task>
+        +User(userId: UUID, userName: String, role: UserRole)
+    }
+
+    enum UserRole {
+        PROJECT_LEADER
+        TEAM_MEMBER
+        MANAGER
+    }
 }
 
-class TaskRepository {
-    - tasks: List<Task>
-    + saveTask(task: Task)
-    + getAllTasks(): List<Task> {get}
-}
+ProjectService --> ProjectRepository
+ProjectService --> Project
+TaskService --> TaskRepository
+TaskService --> Task
+UserService --> UserRepository
+UserService --> User
+UserTaskService --> UserRepository
+UserTaskService --> TaskRepository
+UserTaskService --> User
+UserTaskService --> Task
 
-class UserRepository {
-    - users: List<User>
-    + getUserByUsername(username: String?): User?
-    + saveUser(user: User)
-    + getAllUsers(): List<User> {get}
-}
+ProjectController --> ProjectService
+TaskController --> TaskService
+UserController --> UserService
+UserTaskController --> UserTaskService
+ProjectController --> Project
+TaskController --> Task
+UserController --> User
+UserTaskController --> User
+UserTaskController --> Task
 
-class TaskController {
-    - taskService: TaskService
-    + createTask(taskRequestDto: TaskRequestDto)
-    + listTasks(): List<TaskResponseDto>
-}
+ProjectController --> ProjectRequestDto
+ProjectController --> ProjectResponseDto
+TaskController --> TaskRequestDto
+TaskController --> TaskResponseDto
+UserController --> UserRequestDto
+UserController --> UserResponseDto
+UserTaskController --> TaskRequestDto
+UserTaskController --> TaskResponseDto
 
-class UserController {
-    - userService: UserService
-    + createUser(userRequestDto: UserRequestDto): UserResponseDto?
-    + listUsers(): List<UserResponseDto>
-    + getUserTasks(username: String): List<TaskResponseDto>?
-}
+ProjectRepository --> Project
+TaskRepository --> Task
+UserRepository --> User
 
-class UserTaskController {
-    - userTaskService: UserTaskService
-    + assignTaskToUser(username: String, taskRequestDto: TaskRequestDto)
-}
+Project --> Task
+Task --> User
+User --> UserRole
 
-class TaskRequestDto {
-    - description: String
-}
+com.example.layered.controller -- com.example.layered.application
+com.example.layered.application -- com.example.layered.persistence
+com.example.layered.persistence -- com.example.layered.model
 
-class TaskResponseDto {
-    - description: String
-}
-
-class UserRequestDto {
-    - userName: String
-}
-
-class UserResponseDto {
-    - userName: String
-}
-
-TaskService --> TaskRepository: <<use>>
-UserService --> UserRepository: <<use>>
-UserTaskService --> UserRepository: <<use>>
-UserTaskService --> TaskRepository: <<use>>
-TaskController --> TaskService: <<use>>
-UserController --> UserService: <<use>>
-UserController --> TaskService: <<use>>
-UserTaskController --> UserTaskService: <<use>>
-UserTaskController --> TaskService: <<use>>
-TaskController --> TaskRequestDto: <<use>>
-TaskController --> TaskResponseDto: <<use>>
-UserController --> UserRequestDto: <<use>>
-UserController --> UserResponseDto: <<use>>
-UserTaskController --> TaskRequestDto: <<use>>
-UserTaskController --> TaskResponseDto: <<use>>
-TaskService --> Task: <<use>>
-UserService --> User: <<use>>
-UserTaskService --> User: <<use>>
-UserTaskService --> Task: <<use>>
-@enduml
-
-@startuml
-
-class TaskService {
-    - taskRepository: TaskRepository
-    + createTask(taskData: String?): void
-    + getAllTasks(): List<Task>
-}
-
-class UserService {
-    - userRepository: UserRepository
-    + createUser(username: String?): User?
-    + getAllUsers(): List<User>
-    + getUserTasks(username: String?): List<Task>?
-}
-
-class UserTaskService {
-    - userRepository: UserRepository
-    - taskRepository: TaskRepository
-    + assignTaskToUser(username: String?, taskDescription: String?): Task?
-}
-
-class Task {
-    - description: String
-    - isCompleted: Boolean
-    - assignedUser: User
-}
-
-class User {
-    - username: String
-    - assignedTasks: List<Task>
-}
-
-class TaskRepository {
-    - tasks: List<Task>
-    + saveTask(task: Task): void
-    + getAllTasks(): List<Task> {get}
-}
-
-class UserRepository {
-    - users: List<User>
-    + getUserByUsername(username: String?): User?
-    + saveUser(user: User): void
-    + getAllUsers(): List<User> {get}
-}
-
-class TaskController {
-    - taskService: TaskService
-    + createTask(taskRequestDto: TaskRequestDto): void
-    + listTasks(): List<TaskResponseDto>
-}
-
-class UserController {
-    - userService: UserService
-    + createUser(userRequestDto: UserRequestDto): UserResponseDto?
-    + listUsers(): List<UserResponseDto>
-    + getUserTasks(username: String): List<TaskResponseDto>?
-}
-
-class UserTaskController {
-    - userTaskService: UserTaskService
-    + assignTaskToUser(username: String, taskRequestDto: TaskRequestDto): void
-}
-
-class TaskRequestDto {
-    - description: String
-}
-
-class TaskResponseDto {
-    - description: String
-}
-
-class UserRequestDto {
-    - userName: String
-}
-
-class UserResponseDto {
-    - userName: String
-}
-
-TaskService --> TaskRepository: 1..1
-UserService --> UserRepository: 1..1
-UserTaskService --> UserRepository: 1..1
-UserTaskService --> TaskRepository: 1..1
-TaskController --> TaskService: 1..1
-UserController --> UserService: 1..1
-UserController --> TaskService: 1..1
-UserTaskController --> UserTaskService: 1..1
-UserTaskController --> TaskService: 1..1
-TaskController --> TaskRequestDto: 1..1
-TaskController --> TaskResponseDto: 1..1
-UserController --> UserRequestDto: 1..1
-UserController --> UserResponseDto: 1..1
-UserTaskController --> TaskRequestDto: 1..1
-UserTaskController --> TaskResponseDto: 1..1
-TaskService --> Task: 1..*
-UserService --> User: 1..*
-UserTaskService --> User: 0..1
-UserTaskService --> Task: 0..1
 @enduml
